@@ -18,10 +18,11 @@ type App struct {
 }
 
 func NewApp(log *slog.Logger,
-	port int) *App {
+	port int,
+	authService authgRPC.Auth) *App {
 	grpcServer := grpc.NewServer()
 
-	authgRPC.Register(grpcServer)
+	authgRPC.Register(grpcServer, authService) // подключение обработчика (вроде бы как подрубаем хэндлеры)
 
 	return &App{
 		log:        log,
@@ -37,7 +38,7 @@ func (a *App) MustRun() {
 	}
 }
 
-func (a *App) Run() error {
+func (a *App) Run() error { // запуск сервера
 	const op = "grpcapp.Run"
 	log := a.log.With(slog.String("op", op),
 		slog.Int("port", a.port))

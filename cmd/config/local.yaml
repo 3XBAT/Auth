@@ -3,3 +3,11 @@ token_ttl: 1h
 grpc:
   port: 44044
   timeout: 10h
+
+db:
+  port: "5432"
+  host: "localhost"
+  dbname: "postgres"
+  sslmode: "disable"
+  username: "postgres"
+  password: "qwerty"
