@@ -12,7 +12,6 @@ import (
 	"time"
 )
 
-// это интерфейсы для репозитория то есть условно type Storage inteface {}
 type UserProvider interface {
 	User(ctx context.Context,
 		username string,

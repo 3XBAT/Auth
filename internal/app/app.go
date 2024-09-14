@@ -1,6 +1,5 @@
 package app
 
-// Это общее приложение, которое включает в себя gRPC приложение
 import (
 	grpcapp "auth/internal/app/grpc"
 	"auth/internal/config"
@@ -11,7 +10,7 @@ import (
 	"time"
 )
 
-type App struct { //TODO: некая абстракция над структурой которую мы написали в grpcapp
+type App struct {
 	GRPCSrv *grpcapp.App
 }
 

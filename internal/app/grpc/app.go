@@ -22,7 +22,7 @@ func NewApp(log *slog.Logger,
 	authService authgRPC.Auth) *App {
 	grpcServer := grpc.NewServer()
 
-	authgRPC.Register(grpcServer, authService) // подключение обработчика (вроде бы как подрубаем хэндлеры)
+	authgRPC.Register(grpcServer, authService)
 
 	return &App{
 		log:        log,

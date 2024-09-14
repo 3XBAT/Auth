@@ -1,6 +1,5 @@
 package auth
 
-//TODO:это наши ХЭНДЛЕРЫ
 import (
 	"auth/internal/services/auth"
 	"context"
@@ -18,7 +17,6 @@ type serverAPI struct {
 	auth Auth
 }
 
-// это интерфейсы для слоя бизнес логики
 type Auth interface {
 	Login(ctx context.Context,
 		username string,
