@@ -4,16 +4,23 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="037343e4-aef9-4688-9c31-850df4dfd822" name="Changes" comment="" />
+    <list default="true" id="037343e4-aef9-4688-9c31-850df4dfd822" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/grpc/auth/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/grpc/auth/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/grpc/auth/server_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/grpc/auth/server_test.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../../Program Files/Go" />
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../../../Program Files/Go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2j6JS7zIiaqp5TD2peY5FnA3Qua" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -21,23 +28,85 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Go Test.Test_serverAPI_Register/Empty_Name in auth/internal/grpc/auth.executor": "Run",
+    "Go Test.Test_serverAPI_Register/error_during_RegisterNewUser in auth/internal/grpc/auth.executor": "Run",
+    "Go Test.go test auth/internal/grpc/auth.executor": "Run",
+    "Go Test.go test auth/internal/services/auth.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "git-widget-placeholder": "master",
     "go.import.settings.migrated": "true",
-    "last_opened_file_path": "C:/Users/xvati",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "C:/Users/Admin/My-space/back_go/hvatov/Auth",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm"
   }
 }]]></component>
+  <component name="RunManager" selected="Go Test.Test_serverAPI_Register/error_during_RegisterNewUser in auth/internal/grpc/auth">
+    <configuration name="Test_serverAPI_Register/Empty_Name in auth/internal/grpc/auth" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="auth" />
+      <working_directory value="$PROJECT_DIR$/internal/grpc/auth" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="auth/internal/grpc/auth" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTest_serverAPI_Register\E$/^\QEmpty_Name\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test_serverAPI_Register/error_during_RegisterNewUser in auth/internal/grpc/auth" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="auth" />
+      <working_directory value="$PROJECT_DIR$/internal/grpc/auth" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="auth/internal/grpc/auth" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTest_serverAPI_Register\E$/^\Qerror_during_RegisterNewUser\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test auth/internal/grpc/auth" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="auth" />
+      <working_directory value="$PROJECT_DIR$/internal/grpc/auth" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="auth/internal/grpc/auth" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test auth/internal/services/auth" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="auth" />
+      <working_directory value="$PROJECT_DIR$/internal/services/auth" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="auth/internal/services/auth" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.Test_serverAPI_Register/error_during_RegisterNewUser in auth/internal/grpc/auth" />
+        <item itemvalue="Go Test.Test_serverAPI_Register/Empty_Name in auth/internal/grpc/auth" />
+        <item itemvalue="Go Test.go test auth/internal/services/auth" />
+        <item itemvalue="Go Test.go test auth/internal/grpc/auth" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-gosdk-33c477a475b1-e0158606a674-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-241.18034.61" />
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-GO-241.18034.61" />
+        <option value="bundled-gosdk-33c477a475b1-e0158606a674-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-241.17890.21" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-GO-241.17890.21" />
       </set>
     </attachedChunks>
   </component>
@@ -47,5 +116,16 @@
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/grpc/auth/server.go</url>
+          <line>99</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

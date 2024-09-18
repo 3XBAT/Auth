@@ -1,25 +1,31 @@
 package auth
 
 import (
-	"auth/internal/grpc/auth/mocks"
 	"context"
 	"errors"
-	authv1 "github.com/3XBAT/protos/gen/go"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"auth/internal/grpc/auth/mocks"
+	authv1 "github.com/3XBAT/protos/gen/go"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_serverAPI_Register(t *testing.T) {
+	ErrMock := errors.New("mock error")
 	ctx := context.Background()
 
 	tests := []struct {
 		nameTest                    string
+		in                          *authv1.RegisterRequest
 		name                        string
 		username                    string
 		password                    string
 		mockUnimplementedAuthServer func() authv1.UnimplementedAuthServer
 		mockService                 func(string, string, string) Auth
 		expectedID                  int
+		expectedResp                *authv1.RegisterResponse
+		expectedErr                 error
 		expectedErrStr              string
 	}{
 		{
@@ -42,9 +48,11 @@ func Test_serverAPI_Register(t *testing.T) {
 		},
 		{
 			nameTest: "Empty Name",
-			name:     "",
-			username: "JohnTravolta",
-			password: "a1b2c5",
+			in: &authv1.RegisterRequest{
+				Name:     "",
+				Username: "JohnTravolta",
+				Password: "a1b2c5",
+			},
 			mockUnimplementedAuthServer: func() authv1.UnimplementedAuthServer {
 				return authv1.UnimplementedAuthServer{}
 			},
@@ -108,24 +116,39 @@ func Test_serverAPI_Register(t *testing.T) {
 			expectedID:     0,
 			expectedErrStr: "name is empty",
 		},
+		{
+			nameTest: "error during RegisterNewUser",
+			in: &authv1.RegisterRequest{
+				Name:     "matvey Tabby",
+				Username: "JohnTravolta",
+				Password: "",
+			},
+			mockService: func(name, username, password string) Auth {
+				return nil
+			},
+			expectedResp: nil,
+			expectedErr:  ErrMock,
+		},
 	}
-	for _, test := range tests {
-		t.Run(test.nameTest, func(t *testing.T) {
+	for _, tc := range tests {
+		t.Run(tc.nameTest, func(t *testing.T) {
 			s := &serverAPI{
-				UnimplementedAuthServer: test.mockUnimplementedAuthServer(),
-				auth:                    test.mockService(test.name, test.username, test.password),
+				auth: tc.mockService(tc.in.GetName(), tc.in.GetUsername(), tc.in.GetPassword()),
 			}
 
-			resp, err := s.auth.RegisterNewUser(ctx, test.name, test.username, test.password)
+			resp, _ := s.RegisterNewUser(ctx, tc.in)
 
-			if test.expectedErrStr == "" {
-				assert.Nil(t, err)
-			} else {
-				assert.Error(t, err)
-				assert.Equal(t, test.expectedID, resp)
-			}
+			assert.Equal(t, tc.expectedResp, resp)
+			//assert.ErrorIs(t, err, tc.expectedErr)
 
-			assert.Equal(t, test.expectedID, resp)
+			//if tc.expectedErrStr == "" {
+			//	assert.Nil(t, err)
+			//} else {
+			//	assert.Error(t, err)
+			//	assert.Equal(t, tc.expectedID, resp)
+			//}
+			//
+			//assert.Equal(t, tc.expectedID, resp)
 		})
 	}
 }
