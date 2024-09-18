@@ -20,7 +20,7 @@ func TestRegisterLogin_Login_HappyPath(t *testing.T) {
 
 	name := gofakeit.Name()
 	username := gofakeit.Username()
-	password := randomFakePassword()
+	password := RandomFakePassword()
 
 	respReg, err := st.AuthClient.Register(ctx, &authv1.RegisterRequest{
 		Name:     name,
@@ -62,7 +62,7 @@ func TestRegisterLogin_DuplicateRegistration(t *testing.T) {
 
 	name := gofakeit.Name()
 	username := gofakeit.Username()
-	password := randomFakePassword()
+	password := RandomFakePassword()
 
 	respReg, err := st.AuthClient.Register(ctx, &authv1.RegisterRequest{
 		Name:     name,
@@ -104,7 +104,7 @@ func TestRegister_FailCase(t *testing.T) {
 			nameTest:    "Register with Empty Username",
 			name:        gofakeit.Name(),
 			username:    "",
-			password:    randomFakePassword(),
+			password:    RandomFakePassword(),
 			expectedErr: "username is empty",
 		},
 		{
@@ -140,7 +140,7 @@ func TestLogin_FailCase(t *testing.T) {
 	}{
 		{
 			nameTest:    "Login with Empty Username",
-			password:    randomFakePassword(),
+			password:    RandomFakePassword(),
 			username:    "",
 			expectedErr: "username is empty",
 		},
@@ -158,7 +158,7 @@ func TestLogin_FailCase(t *testing.T) {
 		},
 		{
 			nameTest:    "Login with Non-Matching Password",
-			password:    randomFakePassword(),
+			password:    RandomFakePassword(),
 			username:    gofakeit.Username(),
 			expectedErr: "user not found",
 		},
@@ -174,6 +174,6 @@ func TestLogin_FailCase(t *testing.T) {
 	}
 }
 
-func randomFakePassword() string {
+func RandomFakePassword() string {
 	return gofakeit.Password(true, true, true, true, false, passDefaultLen)
 }

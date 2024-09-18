@@ -12,12 +12,14 @@ import (
 	"time"
 )
 
+//go:generate  go run github.com/vektra/mockery/v2@latest --name=UserProvider --with-expecter=true
 type UserProvider interface {
 	User(ctx context.Context,
 		username string,
 	) (models.User, error)
 }
 
+//go:generate  go run github.com/vektra/mockery/v2@latest --name=UserSaver --with-expecter=true
 type UserSaver interface {
 	SaveUser(ctx context.Context,
 		name string,
@@ -26,7 +28,7 @@ type UserSaver interface {
 	) (uid int, err error)
 }
 
-type Auth struct {
+type Auth struct { // Repository
 	UserProvider
 	UserSaver
 	log      *slog.Logger
@@ -58,6 +60,7 @@ func (a *Auth) Login(
 	username string,
 	password string,
 ) (string, error) {
+
 	const op = "auth.Login"
 
 	log := a.log.With(
@@ -73,13 +76,13 @@ func (a *Auth) Login(
 			return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
 		}
 
-		a.log.Error("failed to get user", err.Error())
+		a.log.Error("failed to get user", "", err.Error())
 
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
 
 	if err := bcrypt.CompareHashAndPassword(user.PassHash, []byte(password)); err != nil {
-		a.log.Info("invalid credentials", err.Error())
+		a.log.Info("invalid credentials", "", err.Error())
 		return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
 	}
 
@@ -87,7 +90,7 @@ func (a *Auth) Login(
 
 	token, err := jwt.NewToken(user, a.TokenTTL)
 	if err != nil {
-		a.log.Error("failed to generate token", err.Error())
+		a.log.Error("failed to generate token", "", err.Error())
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
 
@@ -110,19 +113,19 @@ func (a *Auth) RegisterNewUser(
 
 	passHash, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
 	if err != nil {
-		log.Error("failed to generate password hash", err.Error())
+		log.Error("failed to generate password hash", "", err.Error())
 		return 0, fmt.Errorf("%s: %w", op, err)
 	}
 
 	id, err := a.UserSaver.SaveUser(ctx, name, username, passHash)
 	if err != nil {
 		if errors.Is(err, storage.ErrUserExists) {
-			a.log.Warn("user already exists", err.Error())
+			a.log.Warn("user already exists", "", err.Error())
 
 			return 0, fmt.Errorf("%s: %w", op, ErrUserExists) // сделано специально, чтобы в хэндлеры не пробрасывалась ошибка соля работы с данными
 		}
 
-		log.Error("failed to save user", err.Error())
+		log.Error("failed to save user", "", err.Error())
 
 		return 0, fmt.Errorf("%s: %w", op, err)
 	}

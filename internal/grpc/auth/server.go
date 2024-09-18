@@ -17,11 +17,13 @@ type serverAPI struct {
 	auth Auth
 }
 
+//go:generate go run github.com/vektra/mockery/v2@latest --name=Auth --with-expecter=true
 type Auth interface {
 	Login(ctx context.Context,
 		username string,
 		password string,
 	) (token string, err error)
+
 	RegisterNewUser(ctx context.Context,
 		name string,
 		username string,
@@ -56,7 +58,7 @@ func (s *serverAPI) Login(ctx context.Context,
 	}, nil
 }
 
-func (s *serverAPI) Register(ctx context.Context,
+func (s *serverAPI) RegisterNewUser(ctx context.Context,
 	in *authv1.RegisterRequest,
 ) (*authv1.RegisterResponse, error) {
 	if err := validateRegister(in); err != nil {
