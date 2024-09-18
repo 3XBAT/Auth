@@ -139,6 +139,7 @@ func Test_serverAPI_Register(t *testing.T) {
 			resp, _ := s.RegisterNewUser(ctx, tc.in)
 
 			assert.Equal(t, tc.expectedResp, resp)
+			//TODO: 'ЭТО ВСЁ ХУЙНЯ
 			//assert.ErrorIs(t, err, tc.expectedErr)
 
 			//if tc.expectedErrStr == "" {
