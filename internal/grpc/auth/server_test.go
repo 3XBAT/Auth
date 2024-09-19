@@ -1,8 +1,9 @@
 package auth
 
 import (
+	"auth/internal/services/auth"
 	"context"
-	"errors"
+	"fmt"
 	"testing"
 
 	"auth/internal/grpc/auth/mocks"
@@ -12,39 +13,35 @@ import (
 )
 
 func Test_serverAPI_Register(t *testing.T) {
-	ErrMock := errors.New("mock error")
+	//ErrMock := errors.New("mock error")
 	ctx := context.Background()
 
 	tests := []struct {
-		nameTest                    string
-		in                          *authv1.RegisterRequest
-		name                        string
-		username                    string
-		password                    string
-		mockUnimplementedAuthServer func() authv1.UnimplementedAuthServer
-		mockService                 func(string, string, string) Auth
-		expectedID                  int
-		expectedResp                *authv1.RegisterResponse
-		expectedErr                 error
-		expectedErrStr              string
+		nameTest       string
+		in             *authv1.RegisterRequest
+		mockService    func(string, string, string) Auth
+		expectedResp   *authv1.RegisterResponse
+		expectedErr    error
+		expectedErrStr string
 	}{
 		{
 			nameTest: "Success",
-			name:     "John",
-			username: "JohnTravolta",
-			password: "a1b2c5",
-			mockUnimplementedAuthServer: func() authv1.UnimplementedAuthServer {
-				return authv1.UnimplementedAuthServer{}
+			in: &authv1.RegisterRequest{
+				Name:     "Matvey",
+				Username: "MatveyTabby",
+				Password: "OOP",
 			},
 			mockService: func(name, username, password string) Auth {
 				s := mocks.NewAuth(t)
 				s.EXPECT().
 					RegisterNewUser(ctx, name, username, password).
-					Return(1, nil)
+					Return(1, nil).Once()
 				return s
 			},
-			expectedID:     1,
-			expectedErrStr: "",
+			expectedResp: &authv1.RegisterResponse{
+				UserId: 1,
+			},
+			expectedErr: nil,
 		},
 		{
 			nameTest: "Empty Name",
@@ -53,68 +50,50 @@ func Test_serverAPI_Register(t *testing.T) {
 				Username: "JohnTravolta",
 				Password: "a1b2c5",
 			},
-			mockUnimplementedAuthServer: func() authv1.UnimplementedAuthServer {
-				return authv1.UnimplementedAuthServer{}
-			},
 			mockService: func(name, username, password string) Auth {
-				s := mocks.NewAuth(t)
-				s.EXPECT().RegisterNewUser(ctx, name, username, password).
-					Return(0, errors.New("name is empty"))
-				return s
+				return nil
 			},
-			expectedID:     0,
-			expectedErrStr: "name is empty",
+			expectedResp: nil,
+			expectedErr:  fmt.Errorf("name is empty"),
 		},
 		{
 			nameTest: "Empty username",
-			name:     "John",
-			username: "",
-			password: "a1b2c5",
-			mockUnimplementedAuthServer: func() authv1.UnimplementedAuthServer {
-				return authv1.UnimplementedAuthServer{}
+			in: &authv1.RegisterRequest{
+				Name:     "Matvey",
+				Username: "",
+				Password: "OOP",
 			},
 			mockService: func(name, username, password string) Auth {
-				s := mocks.NewAuth(t)
-				s.EXPECT().RegisterNewUser(ctx, name, username, password).
-					Return(0, errors.New("username is empty"))
-				return s
+				return nil
 			},
-			expectedID:     0,
-			expectedErrStr: "username is empty",
+			expectedResp: nil,
+			expectedErr:  fmt.Errorf("username is empty"),
 		},
 		{
 			nameTest: "Empty Password",
-			name:     "John",
-			username: "JohnTravolta",
-			password: "",
-			mockUnimplementedAuthServer: func() authv1.UnimplementedAuthServer {
-				return authv1.UnimplementedAuthServer{}
+			in: &authv1.RegisterRequest{
+				Name:     "Matvey",
+				Username: "MatveyTabby",
+				Password: "",
 			},
 			mockService: func(name, username, password string) Auth {
-				s := mocks.NewAuth(t)
-				s.EXPECT().RegisterNewUser(ctx, name, username, password).
-					Return(0, errors.New("password is empty"))
-				return s
+				return nil
 			},
-			expectedID:     0,
-			expectedErrStr: "password is empty",
+			expectedResp: nil,
+			expectedErr:  fmt.Errorf("password is empty"),
 		},
 		{
 			nameTest: "Full Empty",
-			name:     "",
-			username: "",
-			password: "",
-			mockUnimplementedAuthServer: func() authv1.UnimplementedAuthServer {
-				return authv1.UnimplementedAuthServer{}
+			in: &authv1.RegisterRequest{
+				Name:     "",
+				Username: "",
+				Password: "",
 			},
 			mockService: func(name, username, password string) Auth {
-				s := mocks.NewAuth(t)
-				s.EXPECT().RegisterNewUser(ctx, name, username, password).
-					Return(0, errors.New("name is empty"))
-				return s
+				return nil
 			},
-			expectedID:     0,
-			expectedErrStr: "name is empty",
+			expectedResp: nil,
+			expectedErr:  fmt.Errorf("name is empty"),
 		},
 		{
 			nameTest: "error during RegisterNewUser",
@@ -127,7 +106,25 @@ func Test_serverAPI_Register(t *testing.T) {
 				return nil
 			},
 			expectedResp: nil,
-			expectedErr:  ErrMock,
+			expectedErr:  fmt.Errorf("password is empty"),
+		},
+		{
+			nameTest: "User already exists",
+			in: &authv1.RegisterRequest{
+				Name:     "Matvey Tabby",
+				Username: "JohnTravolta",
+				Password: "a1b2c5",
+			},
+			mockService: func(name, username, password string) Auth {
+				s := mocks.NewAuth(t)
+
+				s.EXPECT().RegisterNewUser(ctx, name, username, password).
+					Twice().
+					Return(0, auth.ErrUserExists)
+				return s
+			},
+			expectedResp: nil,
+			expectedErr:  fmt.Errorf("user already exists"),
 		},
 	}
 	for _, tc := range tests {
@@ -136,20 +133,126 @@ func Test_serverAPI_Register(t *testing.T) {
 				auth: tc.mockService(tc.in.GetName(), tc.in.GetUsername(), tc.in.GetPassword()),
 			}
 
-			resp, _ := s.RegisterNewUser(ctx, tc.in)
+			resp, err := s.RegisterNewUser(ctx, tc.in)
 
-			assert.Equal(t, tc.expectedResp, resp)
-			//TODO: 'ЭТО ВСЁ ХУЙНЯ
-			//assert.ErrorIs(t, err, tc.expectedErr)
+			if tc.nameTest == "User already exists" {
+				resp, err = s.RegisterNewUser(ctx, tc.in)
+			}
 
-			//if tc.expectedErrStr == "" {
-			//	assert.Nil(t, err)
-			//} else {
-			//	assert.Error(t, err)
-			//	assert.Equal(t, tc.expectedID, resp)
-			//}
-			//
-			//assert.Equal(t, tc.expectedID, resp)
+			if err != nil {
+				assert.Equal(t, tc.expectedResp, resp)
+				assert.ErrorContains(t, err, fmt.Sprintf("%s", tc.expectedErr))
+
+			} else {
+				assert.Equal(t, tc.expectedResp, resp)
+			}
+
+		})
+	}
+}
+
+func Test_serverAPI_Login(t *testing.T) {
+	ctx := context.Background()
+	tests := []struct {
+		nameTest       string
+		in             *authv1.LoginRequest
+		mockService    func(string, string) Auth
+		expectedResp   *authv1.LoginResponse
+		expectedErrStr string
+	}{
+		{
+			nameTest: "Success",
+			in: &authv1.LoginRequest{
+				Username: "MatveyTabby",
+				Password: "OOP",
+			},
+			mockService: func(username, password string) Auth {
+				s := mocks.NewAuth(t)
+				s.EXPECT().
+					Login(ctx, username, password).
+					Return("generatedToken", nil).Once()
+
+				return s
+			},
+			expectedResp: &authv1.LoginResponse{
+				Token: "generatedToken",
+			},
+			expectedErrStr: "",
+		},
+		{
+			nameTest: "Empty Username",
+			in: &authv1.LoginRequest{
+				Username: "",
+				Password: "OOP",
+			},
+			mockService: func(username, password string) Auth {
+				return nil
+			},
+			expectedResp:   nil,
+			expectedErrStr: "username is empty",
+		},
+		{
+			nameTest: "Empty Password",
+			in: &authv1.LoginRequest{
+				Username: "MatveyTabby",
+				Password: "",
+			},
+			mockService: func(username, password string) Auth {
+				return nil
+			},
+			expectedResp:   nil,
+			expectedErrStr: "password is empty",
+		},
+		{
+			nameTest: "Invalid credentials",
+			in: &authv1.LoginRequest{
+				Username: "MatveyTabby",
+				Password: "OOP",
+			},
+			mockService: func(username, password string) Auth {
+				s := mocks.NewAuth(t)
+				s.EXPECT().
+					Login(ctx, username, password).
+					Return("", auth.ErrInvalidCredentials).Once()
+
+				return s
+			},
+			expectedResp:   nil,
+			expectedErrStr: "user not found",
+		},
+		{
+			nameTest: "another error during Login",
+			in: &authv1.LoginRequest{
+				Username: "MatveyTabby",
+				Password: "OOP",
+			},
+			mockService: func(username, password string) Auth {
+				s := mocks.NewAuth(t)
+				s.EXPECT().
+					Login(ctx, username, password).
+					Return("", fmt.Errorf("internal server error")).Once()
+				return s
+			},
+			expectedResp:   nil,
+			expectedErrStr: "internal server error",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.nameTest, func(t *testing.T) {
+			s := &serverAPI{
+				auth: tc.mockService(tc.in.GetUsername(), tc.in.GetPassword()),
+			}
+
+			resp, err := s.Login(ctx, tc.in)
+
+			if tc.expectedErrStr != "" {
+				assert.ErrorContains(t, err, tc.expectedErrStr)
+			} else {
+				assert.Equal(t, tc.expectedResp, resp)
+				assert.Nil(t, err)
+			}
+
 		})
 	}
 }

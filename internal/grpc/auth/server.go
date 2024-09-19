@@ -43,7 +43,6 @@ func (s *serverAPI) Login(ctx context.Context,
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	fmt.Println(in)
 	token, err := s.auth.Login(ctx, in.GetUsername(), in.GetPassword())
 
 	if err != nil {
@@ -94,6 +93,7 @@ func validateLogin(in *authv1.LoginRequest) error {
 }
 
 func validateRegister(in *authv1.RegisterRequest) error {
+
 	if in.GetUsername() == "" {
 		return status.Error(codes.InvalidArgument, "username is empty")
 	}
