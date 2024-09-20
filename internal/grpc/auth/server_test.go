@@ -119,7 +119,6 @@ func Test_serverAPI_Register(t *testing.T) {
 				s := mocks.NewAuth(t)
 
 				s.EXPECT().RegisterNewUser(ctx, name, username, password).
-					Twice().
 					Return(0, auth.ErrUserExists)
 				return s
 			},
@@ -134,10 +133,6 @@ func Test_serverAPI_Register(t *testing.T) {
 			}
 
 			resp, err := s.RegisterNewUser(ctx, tc.in)
-
-			if tc.nameTest == "User already exists" {
-				resp, err = s.RegisterNewUser(ctx, tc.in)
-			}
 
 			if err != nil {
 				assert.Equal(t, tc.expectedResp, resp)

@@ -4,7 +4,6 @@ import (
 	"auth/internal/services/auth"
 	"context"
 	"errors"
-	"fmt"
 	authv1 "github.com/3XBAT/protos/gen/go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -61,13 +60,11 @@ func (s *serverAPI) RegisterNewUser(ctx context.Context,
 	in *authv1.RegisterRequest,
 ) (*authv1.RegisterResponse, error) {
 	if err := validateRegister(in); err != nil {
-		fmt.Println(err)
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	userID, err := s.auth.RegisterNewUser(ctx, in.GetName(), in.GetUsername(), in.GetPassword())
 	if err != nil {
-		fmt.Println(err)
 		if errors.Is(err, auth.ErrUserExists) {
 			return nil, status.Error(codes.AlreadyExists, "user already exists")
 		}

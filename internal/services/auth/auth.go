@@ -108,6 +108,7 @@ func (a *Auth) RegisterNewUser(
 	log := a.log.With(
 		slog.String("op", op),
 		slog.String("username", username),
+		slog.String("passHash", pass),
 	)
 	log.Info("registering user")
 
