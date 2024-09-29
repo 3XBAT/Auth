@@ -6,7 +6,7 @@ grpc:
 
 db:
   port: "5432"
-  host: "localhost"
+  host: "db"
   dbname: "postgres"
   sslmode: "disable"
   username: "postgres"

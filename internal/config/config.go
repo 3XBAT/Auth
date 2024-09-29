@@ -15,8 +15,8 @@ type Config struct {
 }
 
 type GRPCConfig struct {
-	Port    int           `yaml:port`
-	Timeout time.Duration `yaml:timeout`
+	Port    int           `yaml:"port"`
+	Timeout time.Duration `yaml:"timeout"`
 }
 
 type DBConfig struct {
@@ -54,7 +54,7 @@ func MustLoadByPath(configPath string) *Config {
 
 func fetchConfigPath() string {
 	var res string
-	flag.StringVar(&res, "config", "", "path to config file")
+	flag.StringVar(&res, "config", "config.yaml", "path to config file")
 	flag.Parse()
 	if res == "" {
 		res = os.Getenv("CONFIG_PATH")
